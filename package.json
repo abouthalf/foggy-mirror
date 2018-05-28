@@ -1,0 +1,39 @@
+{
+  "name": "foggy-mirror",
+  "version": "1.0.0",
+  "description": "A foggy mirror you can draw on",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack -p",
+    "dev": "webpack-dev-server --mode=development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abouthalf/foggy-mirror.git"
+  },
+  "author": "mb@abouthalf.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abouthalf/foggy-mirror/issues"
+  },
+  "homepage": "https://github.com/abouthalf/foggy-mirror#readme",
+  "dependencies": {
+    "clean-webpack-plugin": "^0.1.19",
+    "css-loader": "^0.28.11",
+    "gh-pages": "^1.1.0",
+    "html-webpack-plugin": "^3.2.0",
+    "less": "^3.0.4",
+    "less-loader": "^4.1.0",
+    "less-plugin-autoprefix": "^1.5.1",
+    "less-plugin-clean-css": "^1.5.1",
+    "lodash": "^4.17.10",
+    "script-ext-html-webpack-plugin": "^2.0.1",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.9.1",
+    "webpack-dev-server": "^3.1.4"
+  },
+  "devDependencies": {
+    "webpack-cli": "^2.1.4"
+  }
+}

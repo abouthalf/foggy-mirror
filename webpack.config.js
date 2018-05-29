@@ -5,6 +5,7 @@ const ScriptExtHtmlWebPackPlugin = require('script-ext-html-webpack-plugin');
 const LessPluginAutoPrefix = require('less-plugin-autoprefix');
 const CleanCSSPlugin = require('less-plugin-clean-css');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 module.exports = {
     context: resolve(__dirname, 'src'),
@@ -61,6 +62,7 @@ module.exports = {
             }
         ),
         new webpack.HotModuleReplacementPlugin(),
+        new FaviconsWebpackPlugin(resolve(__dirname, 'src/fav.png')),
         new HtmlWebpackPlugin({
             template: resolve(__dirname, 'src/index.html')
         }),

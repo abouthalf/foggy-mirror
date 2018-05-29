@@ -65,3 +65,8 @@ typings/
 
 # vscode
 .vscode
+
+# auto-generated code
+dist/*.html
+dist/*.js
+dist/*.png

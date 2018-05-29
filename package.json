@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack -p",
     "dev": "webpack-dev-server --mode=development",
-    "deploy": "build && gh-pages -d dist --dotfiles"
+    "deploy": "npm run build && gh-pages -d dist --dotfiles"
   },
   "repository": {
     "type": "git",

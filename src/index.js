@@ -182,6 +182,11 @@ function coords(e, el) {
     }
 }
 
+/**
+ * Get coords - place brush mark at same
+ * @param {Event} e 
+ * @param {HTMLElement} el 
+ */
 function doBrush(e, el) {
     let xy = coords(e, el);
     let x = xy.x - (brushSize / 2);
@@ -189,6 +194,10 @@ function doBrush(e, el) {
     drawingCtx.drawImage(brush, xy.x, xy.y);
 }
 
+/**
+ * Add touch / mouse events to target
+ * @param {HTMLElement} target 
+ */
 function attachEvents(target) {
     let touch = false;
     try {
@@ -212,7 +221,7 @@ function attachEvents(target) {
 }
 
 /**
- * 
+ * Draw
  * @param {Event} e 
  */
 function onMove(e) {
@@ -223,7 +232,7 @@ function onMove(e) {
 }
 
 /**
- * 
+ * Pen down
  * @param {Event} e 
  */
 function onDown(e) {
@@ -232,7 +241,7 @@ function onDown(e) {
 }
 
 /**
- * 
+ * Pen up
  * @param {Event} e 
  */
 function onUp(e) {

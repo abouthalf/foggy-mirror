@@ -6,9 +6,10 @@ import './index.less';
 import brushSrc from './circle.png';
 
 // get copmonents
-const container = document.querySelector('#mirror');
+let $ = (sel) => document.querySelector(sel);
+const container = $('#mirror');
 /** @type HTMLCanvasElement */
-const stage = document.querySelector('#stage');
+const stage = $('#stage');
 const stageCtx = stage.getContext('2d');
 
 /** @type HTMLCanvasElement */
@@ -29,7 +30,7 @@ const cleanCtx = clean.getContext('2d');
 
 
 /** @type HTMLVideoElement */
-const vid = document.querySelector('video');
+const vid = $('video');
 
 /**
  * Debugging Canvases?
@@ -60,7 +61,6 @@ brushImg.src = brushSrc;
 
 // get webcam
 const constraints = {
-    audio: false,
     video: {facingMode: 'user'}
 }
 
@@ -70,11 +70,7 @@ getUserMedia(constraints).then(mediaStrem => {
         setCanvasToVideoDimensions(vid, stage, fog, drawing, clean);
         mirrorCanvas(fogCtx, fog);
         mirrorCanvas(cleanCtx, clean);
-        stage.addEventListener('mousemove', onMouseMove);
-        stage.addEventListener('mousedown', onMouseDown);
-        stage.addEventListener('mouseup', onMouseUp);
-        stage.addEventListener('mouseout', onMouseUp);
-        stage.addEventListener('mouseleave', onMouseUp);
+        attachEvents(stage);
         (function loop() {
             if (!vid.paused && !vid.ended) {
                 // apply effects and coposite
@@ -90,6 +86,8 @@ getUserMedia(constraints).then(mediaStrem => {
         vid.play();
     };
 }).catch(err => {
+    $('.oh-no').removeAttribute('hidden');
+    $('#mirror').setAttribute('hidden', '');
     console.log(err);
 });
 
@@ -184,20 +182,60 @@ function coords(e, el) {
     }
 }
 
-function onMouseMove(e) {
-    // console.log(isDrawing, this);
-    if (isDrawing) {
-        let xy = coords(e, this);
-        let x = xy.x - (brushSize / 2);
-        let y = xy.y -  - (brushSize / 2);
-        drawingCtx.drawImage(brush, xy.x, xy.y);
+function doBrush(e, el) {
+    let xy = coords(e, el);
+    let x = xy.x - (brushSize / 2);
+    let y = xy.y -  - (brushSize / 2);
+    drawingCtx.drawImage(brush, xy.x, xy.y);
+}
+
+function attachEvents(target) {
+    let touch = false;
+    try {
+        document.createEvent("TouchEvent");  
+        touch = true;
+    } catch(e) {
+        touch = false;
     }
+    if (touch) {
+        target.addEventListener('touchstart', onDown);
+        target.addEventListener('touchend', onUp);
+        target.addEventListener('touchcancel', onUp);
+        target.addEventListener('touchmove', onMove);
+        return;
+    }
+    target.addEventListener('mousemove', onMove);
+    target.addEventListener('mousedown', onDown);
+    target.addEventListener('mouseup', onUp);
+    target.addEventListener('mouseout', onUp);
+    target.addEventListener('mouseleave', onUp);
 }
 
-function onMouseDown(e) {
+/**
+ * 
+ * @param {Event} e 
+ */
+function onMove(e) {
+    if (isDrawing) {
+        doBrush(e, this);
+    }
+    e.preventDefault();
+}
+
+/**
+ * 
+ * @param {Event} e 
+ */
+function onDown(e) {
     isDrawing = true;
+    e.preventDefault();
 }
 
-function onMouseUp(e) {
+/**
+ * 
+ * @param {Event} e 
+ */
+function onUp(e) {
     isDrawing = false;
+    e.preventDefault();
 }

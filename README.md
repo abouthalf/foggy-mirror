@@ -15,3 +15,11 @@ Using `yarn` as your package manager...
 `yarn build` to do a production build
 
 `yarn dev` to run the webpack development server.
+
+## How it do?
+
+This relies on the new-ish HTML5 MediaDevices api which is a _bit_ finicky and may not behave right in your favorite browser. 
+
+Assuming everything up-to-date and happy, this web site will ask permission to use your devices front-facing camera. That video feed is captured in an HTML5 video element. 30 times a second the current frame of video is captured in an HTML5 canvas element where it is mirrored and blurred to create the fogged effect. This image is composited into a "stage" canvas for display on the page.
+
+Touch or mouse events on the stage are translated into drawing on a third canvas. The clean "un-fogged" video is composited into the drawing canvas, so that clean video appears in the areas where the canvas is touched. Lastly the "clean" drawn video is composited into the fogged video to create the foggy mirror effect.

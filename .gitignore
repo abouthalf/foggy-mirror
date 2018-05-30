@@ -70,4 +70,6 @@ typings/
 dist/*.html
 dist/*.js
 dist/*.png
-dist/icons*
+dist/assets
+
+src/.wwp-cache

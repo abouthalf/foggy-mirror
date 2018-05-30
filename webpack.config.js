@@ -74,10 +74,7 @@ module.exports = {
             favicons: {
                 appName: 'Foggy Mirror',
                 display: 'browser',
-                start_url: '',
-                icons: {
-                    appleStartup: false
-                }
+                start_url: ''
             }
         })
     ]

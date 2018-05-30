@@ -64,7 +64,10 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin(),
         new FaviconsWebpackPlugin({
             logo: resolve(__dirname, 'src/fav.png'),
-            display: 'browser'
+            display: 'browser',
+            icons: {
+                appleStartup: false
+            }
         }),
         new HtmlWebpackPlugin({
             template: resolve(__dirname, 'src/index.html')

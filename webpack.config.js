@@ -58,11 +58,14 @@ module.exports = {
             [resolve(__dirname, 'dist')],
             {
                 root: __dirname,
-                exclude: ['.nojekyll', 'CNAME']
+                exclude: ['.nojekyll', 'CNAME', 'thumbnail.jpg']
             }
         ),
         new webpack.HotModuleReplacementPlugin(),
-        new FaviconsWebpackPlugin(resolve(__dirname, 'src/fav.png')),
+        new FaviconsWebpackPlugin({
+            logo: resolve(__dirname, 'src/fav.png'),
+            display: 'browser'
+        }),
         new HtmlWebpackPlugin({
             template: resolve(__dirname, 'src/index.html')
         }),

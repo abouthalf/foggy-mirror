@@ -5,7 +5,6 @@ const ScriptExtHtmlWebPackPlugin = require('script-ext-html-webpack-plugin');
 const LessPluginAutoPrefix = require('less-plugin-autoprefix');
 const CleanCSSPlugin = require('less-plugin-clean-css');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const WebappWebpackPlugin = require('webapp-webpack-plugin')
 
 module.exports = {
     context: resolve(__dirname, 'src'),
@@ -58,7 +57,7 @@ module.exports = {
             [resolve(__dirname, 'dist')],
             {
                 root: __dirname,
-                exclude: ['.nojekyll', 'CNAME', 'thumbnail.jpg']
+                exclude: ['.nojekyll', 'CNAME', 'thumbnail.jpg', 'favicons']
             }
         ),
         new webpack.HotModuleReplacementPlugin(),
@@ -68,24 +67,6 @@ module.exports = {
         new ScriptExtHtmlWebPackPlugin({
             defaultAttribute: 'defer',
             module: 'app'
-        }),
-        new WebappWebpackPlugin({
-            logo: resolve(__dirname, 'src/fav.png'),
-            favicons: {
-                appName: 'Foggy Mirror',
-                display: 'browser',
-                start_url: '',
-                icons: {
-                    android: true,
-                    appleIcon: true,
-                    appleStartup: false,
-                    coast: false,
-                    favicons: true,
-                    firefox: true,
-                    windows: false,
-                    yandex: false   
-                }
-            }
         })
     ]
 }

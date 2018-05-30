@@ -1,35 +1,56 @@
 import Stackblur from 'stackblur-canvas';
 import getUserMedia from 'get-user-media-promise';
 
-import './index.less';
+import {ohNo} from './lib/messages';
 
+import './index.less';
 import brushSrc from './circle.png';
 
-// get copmonents
+/**
+ * Get an element
+ * @param {string} sel 
+ * @returns {HTMLElement}
+ */
 let $ = (sel) => document.querySelector(sel);
+
+/**
+ * Make an element
+ * @param {string} el
+ * @returns {HTMLElement} 
+ */
+let el = (el) => document.createElement(el);
+
+// Get / Make DOM elements
+
+/** @type {HTMLElement} */
 const container = $('#mirror');
-/** @type HTMLCanvasElement */
+
+/** @type {HTMLCanvasElement} */
 const stage = $('#stage');
+/** @type {CanvasRenderingContext2D} */
 const stageCtx = stage.getContext('2d');
 
-/** @type HTMLCanvasElement */
-const fog = document.createElement('canvas');
+/** @type {HTMLCanvasElement} */
+const fog = el('canvas');
+/** @type {CanvasRenderingContext2D} */
 const fogCtx = fog.getContext('2d');
 
-/** @type HTMLCanvasElement */
-const drawing = document.createElement('canvas');
+/** @type {HTMLCanvasElement} */
+const drawing = el('canvas');
+/** @type {CanvasRenderingContext2D} */
 const drawingCtx = drawing.getContext('2d');
 
-/** @type HTMLCanvasElement */
-const brush = document.createElement('canvas');
+/** @type {HTMLCanvasElement} */
+const brush = el('canvas');
+/** @type {CanvasRenderingContext2D} */
 const brushCtx = brush.getContext('2d');
 
-/** @type HTMLCanvasElement */
-const clean = document.createElement('canvas');
+/** @type {HTMLCanvasElement} */
+const clean = el('canvas');
+/** @type {CanvasRenderingContext2D} */
 const cleanCtx = clean.getContext('2d');
 
-
-/** @type HTMLVideoElement */
+/** @type {HTMLVideoElement} */
 const vid = $('video');
 
 /**
@@ -41,14 +62,13 @@ if (DEBUG) {
     document.body.appendChild(clean);
 }
 
-// window dimensions
-const w = window.innerWidth;
-const h = window.innerHeight;
-
 // constants and state
 const blur = 35;
-let isDrawing = false;
 const brushSize = 50;
+const constraints = {
+    video: {facingMode: 'user'}
+}
+let isDrawing = false;
 
 // load a brush to draw with
 let brushImg = new Image();
@@ -59,23 +79,19 @@ brushImg.onload = e => {
 };
 brushImg.src = brushSrc;
 
-// get webcam
-const constraints = {
-    video: {facingMode: 'user'}
-}
-
+// Do work
 getUserMedia(constraints).then(mediaStrem => {
     vid.srcObject = mediaStrem;
     vid.addEventListener('play', e => {
         setCanvasToVideoDimensions(vid, stage, fog, drawing, clean);
-        mirrorCanvas(fogCtx, fog);
-        mirrorCanvas(cleanCtx, clean);
+        mirrorCanvas(fogCtx);
+        mirrorCanvas(cleanCtx);
         attachEvents(stage);
         (function loop() {
             if (!vid.paused && !vid.ended) {
                 // apply effects and coposite
-                captureCleanVideo(cleanCtx, vid);
-                blurVideo(vid, fog, fogCtx);
+                captureCleanVideo(vid, cleanCtx);
+                blurVideo(vid, fogCtx);
                 applyDrawingToCleanVideo(drawingCtx, cleanCtx);
                 composite(stageCtx, fog, clean);
                 setTimeout(loop, 1000 / 30); // drawing at 30fps
@@ -86,10 +102,21 @@ getUserMedia(constraints).then(mediaStrem => {
         vid.play();
     };
 }).catch(err => {
-    $('.oh-no').removeAttribute('hidden');
-    $('#mirror').setAttribute('hidden', '');
+    // hide vid, show error
+    showErrorMsg();
     console.log(err);
 });
+
+/**
+ * Add an error message, hide the video container
+ */
+function showErrorMsg() {
+    let div = el('div');
+    div.className = 'content oh-no';
+    div.innerHTML = ohNo;
+    container.parentNode.insertBefore(div, container);
+    container.setAttribute('hidden', 'hideen');
+}
 
 /**
  * Using video as a guide, set dim on all provided canvases
@@ -108,10 +135,9 @@ function setCanvasToVideoDimensions(video, ...canvases) {
 /**
  * Flip it!
  * @param {CanvasRenderingContext2D} ctx 
- * @param {HTMLCanvasElement} canvas 
  */
-function mirrorCanvas(ctx, canvas) {
-    ctx.translate(canvas.width, 0);
+function mirrorCanvas(ctx) {
+    ctx.translate(ctx.canvas.width, 0);
     ctx.scale(-1, 1);
 }
 
@@ -121,17 +147,17 @@ function mirrorCanvas(ctx, canvas) {
  * @param {HTMLCanvasElement} canvas 
  * @param {CanvasRenderingContext2D} ctx 
  */
-function blurVideo(video, canvas, ctx) {
+function blurVideo(video, ctx) {
     ctx.drawImage(video, 0, 0);
-    Stackblur.canvasRGB(canvas, 0, 0, canvas.width, canvas.height, blur);
+    Stackblur.canvasRGB(ctx.canvas, 0, 0, ctx.canvas.width, ctx.canvas.height, blur);
 }
 
 /**
  * Drop clean video into clean canvas
+ * @param {HTMLVideoElement} video
  * @param {CanvasRenderingContext2D} cleanCtx 
- * @param {HTMLVideoElement} video 
  */
-function captureCleanVideo(cleanCtx, video) {
+function captureCleanVideo(video, cleanCtx) {
     let w = cleanCtx.canvas.width;
     let h = cleanCtx.canvas.height;
     cleanCtx.drawImage(video, 0, 0, w, h);
